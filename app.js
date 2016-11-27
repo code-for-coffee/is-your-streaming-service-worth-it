@@ -46,7 +46,13 @@ class LastfmClient {
     const API_URL = 'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks';
     const API_LIMIT = '200';
     const API_FORMAT = 'json';
-    return API_URL + '&user=' + username + '&from=' + timestamp + '&limit=' + API_LIMIT + '&format=' + API_FORMAT + '&api_key=' + API_KEY + '&page=' + pageNum;
+    return API_URL + '&user=' +
+      username + '&from=' +
+      timestamp + '&limit=' +
+      API_LIMIT + '&format=' +
+      API_FORMAT + '&api_key=' +
+      API_KEY + '&page=' +
+      pageNum;
   }
 
   /***
