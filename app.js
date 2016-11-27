@@ -2,17 +2,28 @@ const fs = require('fs');
 const fetch = require('fetch').fetchUrl;
 const moment = require('moment');
 
-let usr = 'lenoreo';
+let usr = 'neythas';
 
+/***
+ * Class for detecting if you save money by using a music subscription service
+ */
 class LastfmClient {
 
+
   /***
-   * constructor
+   * Constructor
    * @param username
+   * @param songPrice
+   * @param subscriptionPrice
    */
-  constructor(username) {
+  constructor(username, songPrice, subscriptionPrice) {
+    console.log('Warning: this class loads data async')
+    this.price = songPrice;
+    this.subPrice = subscriptionPrice;
+    this.user = username;
     this.props = {};
     this.currentPage = 1;
+    this.totalPages = 1;
     this.timestamp = this.getUnixTimestamp();
     this.url = this.uriBuilder(username, this.currentPage, this.timestamp);
     this.childFetch(this.url);
@@ -78,17 +89,38 @@ class LastfmClient {
   childFetch(url) {
     fetch(url, (error, meta, body) => {
       let reqBody = body.toString();
+      let m = this.getReqBodyAttrs(reqBody);
       let t = this.getRecentTracks(reqBody);
+      this.totalPages = m.totalPages;
       if (t < 1) {
         console.log('No tracks for user in 30 day period');
       } else {
-        console.log('Trackzzzz',t.length)
+        //console.log('No. of tracks: ',t.length)
+        // add track
         t.forEach((track) => {
           this.addTrack(track);
         });
+        //console.log('b4 while')
+        // spawn async child processes
+        while (this.totalPages > this.currentPage) {
+          this.currentPage++;
+          console.log('Async Child Task No. Spanwed', this.currentPage);
+          this.url = this.uriBuilder(this.user, this.currentPage, this.timestamp);
+          this.childFetch(this.url);
+        }
+        //console.log('a4 while')
       }
-      console.log(this.props);
+      console.log('Updated Unique Songs');
+      console.log(Object.keys(this.props).length);
+      let cost = Object.keys(this.props).length * this.price;
+      if (cost > this.subPrice) {
+        console.log('You save money by using your subscription service.');
+      } else {
+        console.log('You DO NOT save money by using your subscription service.');
+      }
     });
+    // console.log('Unique Songs');
+    // console.log(Object.keys(this.props).length);
   };
 
   /***
@@ -109,6 +141,21 @@ class LastfmClient {
     return b['recenttracks']['@attr'];
   };
 
+  /***
+   * Return a string format
+   */
+  toString() {
+    return JSON.stringify(this.props);
+  }
+
+  /***
+   * Return a POJO
+   * @returns {{}|*}
+   */
+  toObject() {
+    return this.props;
+  }
+
 }
 
-new LastfmClient(usr);
+let client = new LastfmClient(usr, 0.99, 9.99);
