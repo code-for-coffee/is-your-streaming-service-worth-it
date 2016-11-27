@@ -11,11 +11,27 @@ class LastfmClient {
    * @param username
    */
   constructor(username) {
+    this.props = {};
     this.currentPage = 1;
     this.timestamp = this.getUnixTimestamp();
     this.url = this.uriBuilder(username, this.currentPage, this.timestamp);
     this.childFetch(this.url);
   };
+
+  /***
+   * Add track count to this.props[artist]
+   * @param track
+   */
+  addTrack(track) {
+    let artist = track['artist']['#text'];
+    let song = track['name'];
+    let t = artist + '-' + song;
+    if (!this.props.hasOwnProperty(t)) {
+      this.props[t] = 1;
+    } else {
+      this.props[t] = this.props[t] + 1;
+    }
+  }
 
   /***
    * Returns unix timestamp for 30 days prior
@@ -61,8 +77,17 @@ class LastfmClient {
    */
   childFetch(url) {
     fetch(url, (error, meta, body) => {
-      var reqBody = body.toString();
-      console.log(JSON.parse(body.toString()));
+      let reqBody = body.toString();
+      let t = this.getRecentTracks(reqBody);
+      if (t < 1) {
+        console.log('No tracks for user in 30 day period');
+      } else {
+        console.log('Trackzzzz',t.length)
+        t.forEach((track) => {
+          this.addTrack(track);
+        });
+      }
+      console.log(this.props);
     });
   };
 
@@ -72,7 +97,7 @@ class LastfmClient {
    */
   getRecentTracks(body) {
     let t = JSON.parse(body);
-    return body['recenttracks']['track']; // [] of tracks
+    return t['recenttracks']['track']; // [] of tracks
   };
 
   /***
@@ -81,7 +106,7 @@ class LastfmClient {
    */
   getReqBodyAttrs(body) {
     let b = JSON.parse(body);
-    return body['recenttracks']['@attr'];
+    return b['recenttracks']['@attr'];
   };
 
 }
