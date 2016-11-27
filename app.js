@@ -2,7 +2,7 @@ const fs = require('fs');
 const fetch = require('fetch').fetchUrl;
 const moment = require('moment');
 
-let usr = 'rj';
+let usr = 'neythas';
 
 console.log('Is your Streaming service worth it?')
 
@@ -15,7 +15,7 @@ class LastfmClient {
    * Constructor
    * @param username
    * @param songPrice
-   * @param subscriptionPrice
+   * @param subscriptionPrice (per year)
    */
   constructor(username, songPrice, subscriptionPrice) {
     console.log('Warning: this class loads data async')
@@ -51,10 +51,9 @@ class LastfmClient {
    */
   getUnixTimestamp() {
     let z = moment(new Date());
-    let m = z.get('month')
-    let priorMonth = m - 1;
-    if (priorMonth < 0) priorMonth = 11;
-    z.set({ 'month': priorMonth });
+    let m = z.get('year')
+    let pY = m - 1;
+    z.set({ 'year': pY });
     //console.log(z)
     let n = z.get('month')
     //console.log(n);
@@ -168,7 +167,7 @@ class LastfmClient {
 
 }
 
-let client = new LastfmClient(usr, 0.99, 9.99);
+let client = new LastfmClient(usr, 0.99, 240);
 
 process.on('exit', function (){
   console.log('Results...');

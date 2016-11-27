@@ -1,6 +1,10 @@
 # Is your streaming service worth it?
 
-Find out if your streaming service is worth it or not (Last.fm account required).
+Find out if your streaming service is worth it or not (Last.fm account required). The class provided accepts three arguments: 
+
+* your username for Last.fm
+* the price you'd pay for an individual song
+* how much you pay for subscription services in a year
 
 ## Usage
 
