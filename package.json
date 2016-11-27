@@ -1,0 +1,19 @@
+{
+  "name": "is-your-streaming-service-worth-it",
+  "version": "1.0.0",
+  "description": "Find out if your streaming service is worth it or not (Last.fm account required)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/code-for-coffee/is-your-streaming-service-worth-it.git"
+  },
+  "author": "code-for-coffee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/code-for-coffee/is-your-streaming-service-worth-it/issues"
+  },
+  "homepage": "https://github.com/code-for-coffee/is-your-streaming-service-worth-it#readme"
+}
