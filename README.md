@@ -7,6 +7,7 @@ Find out if your streaming service is worth it or not (Last.fm account required)
 * Fork & clone this repository.
 * In `app.js`, replace the `usr` variable on line 3 with your Last.fm username.
 * Run `app.js`
+* You can 
 
 #### Notes
 

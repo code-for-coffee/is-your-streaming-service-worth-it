@@ -2,13 +2,14 @@ const fs = require('fs');
 const fetch = require('fetch').fetchUrl;
 const moment = require('moment');
 
-let usr = 'neythas';
+let usr = 'rj';
+
+console.log('Is your Streaming service worth it?')
 
 /***
  * Class for detecting if you save money by using a music subscription service
  */
 class LastfmClient {
-
 
   /***
    * Constructor
@@ -87,6 +88,7 @@ class LastfmClient {
    * @param url
    */
   childFetch(url) {
+
     fetch(url, (error, meta, body) => {
       let reqBody = body.toString();
       let m = this.getReqBodyAttrs(reqBody);
@@ -104,24 +106,32 @@ class LastfmClient {
         // spawn async child processes
         while (this.totalPages > this.currentPage) {
           this.currentPage++;
-          console.log('Async Child Task No. Spanwed', this.currentPage);
+          //console.log('Async Child Task No. Spanwed', this.currentPage);
           this.url = this.uriBuilder(this.user, this.currentPage, this.timestamp);
           this.childFetch(this.url);
         }
         //console.log('a4 while')
       }
-      console.log('Updated Unique Songs');
-      console.log(Object.keys(this.props).length);
-      let cost = Object.keys(this.props).length * this.price;
-      if (cost > this.subPrice) {
-        console.log('You save money by using your subscription service.');
-      } else {
-        console.log('You DO NOT save money by using your subscription service.');
-      }
     });
     // console.log('Unique Songs');
     // console.log(Object.keys(this.props).length);
   };
+
+  saveJson() {
+    fs.writeFileSync(this.user + '-dataset.json', JSON.stringify(this.props));
+  }
+
+  calculateSavings() {
+    console.log(Object.keys(this.props).length);
+    let cost = Object.keys(this.props).length * this.price;
+    if (cost > this.subPrice) {
+      console.log('You save money by using your subscription service.');
+      return true;
+    } else {
+      console.log('You DO NOT save money by using your subscription service.');
+      return false;
+    }
+  }
 
   /***
    * @param request.body
@@ -159,3 +169,11 @@ class LastfmClient {
 }
 
 let client = new LastfmClient(usr, 0.99, 9.99);
+
+process.on('exit', function (){
+  console.log('Results...');
+  console.log(client.calculateSavings());
+  console.log(`Saving to ${usr}-dataset.json`);
+  client.saveJson();
+  //console.log(client.toString());
+});
