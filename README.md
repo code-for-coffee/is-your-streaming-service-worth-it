@@ -16,3 +16,16 @@ Find out if your streaming service is worth it or not (Last.fm account required)
 #### Notes
 
 This class uses `fetch()` to async and recursively update each instantiated object's `this.props`. `toString()` and `toObject()` should be regarded with that in mind.
+
+#### Output
+
+```bash
+$ node app.js 
+Is your Streaming service worth it?
+Warning: this class loads data async
+Results...
+3131
+You save money by using your subscription service.
+true
+Saving to dataset.json
+```
